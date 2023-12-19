@@ -11,7 +11,6 @@ class Game {
     } else {
       c.color = chooseColor(p)
     }
-
   }
 
   def chooseColor(p: Int) : Color = {
