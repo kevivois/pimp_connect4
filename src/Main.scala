@@ -1,3 +1,4 @@
 object Main extends App {
-  print("test")
+  var game = new Game()
+  game.draw()
 }
