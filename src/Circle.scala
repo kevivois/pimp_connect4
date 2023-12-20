@@ -1,32 +1,31 @@
 import java.awt.Color
 import  hevs.graphics.FunGraphics
-class Circle(graphics:FunGraphics,centerX:Int,centerY:Int,radius:Int,private var colored:Boolean,var color:Color=Color.red) {
+class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boolean,var color:Color=Color.red) {
 
-  def getX:Int = centerX
-  def getY:Int = centerY
+  def getX:Int = x
+  def getY:Int = y
 
   def getRadius:Int = radius
+  def getCenterX:Int = getX+(radius)
+  def getCenterY:Int = getY+(radius)
 
   def onClicked():Unit = {
-    print("colored",colored)
-
       fill()
-
   }
   def draw():Unit = {
     drawBorders()
     if(colored) {
       graphics.setColor(color)
-      graphics.drawFilledCircle(centerX-radius, centerY-radius, radius)
+      graphics.drawFilledCircle(getX, getY, radius*2)
     }
+    graphics.drawCircle(getCenterX,getCenterY,2)
   }
   private def drawBorders():Unit = {
     graphics.setColor(new Color(0,0,0))
-    graphics.drawCircle(centerX-radius,centerY-radius,radius)
+    graphics.drawCircle(getX,getY,radius*2)
   }
   def fill(clr:Color=color): Unit = {
     colored = true
-    print("colored 2",colored)
     color = clr
     draw()
   }

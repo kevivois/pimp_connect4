@@ -8,18 +8,19 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getY:Int = y
   def getRadius:Int = radius
   init()
-  def onClicked(x:Int,y:Int):Boolean = {
+  def onClicked(pX:Int,pY:Int):Boolean = {
     for(i <- circles.indices){
-      if(Math.pow(x-circles(i).getX,2) + Math.pow(y-circles(i).getY,2) < Math.pow(circles(i).getRadius,2)){
+      var centerX = circles(i).getCenterX
+      var centerY = circles(i).getCenterY
+      if(Math.sqrt(Math.pow(pX-centerX,2) + Math.pow(pY-centerY,2)) < circles(i).getRadius){
         circles(i).onClicked()
-        return true
       }
     }
     false
   }
   def init():Unit = {
     for (i <- circles.indices) {
-      val posY = y + radius * i
+      val posY = y + (radius*2 * i)
       val posX = x
       circles(i) = new Circle(graphics,posX,posY,radius,false)
     }
