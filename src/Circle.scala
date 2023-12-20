@@ -6,8 +6,8 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   def getY:Int = y
 
   def getRadius:Int = radius
-  def getCenterX:Int = getX+(radius)
-  def getCenterY:Int = getY+(radius)
+  def getCenterX:Int = getX+radius
+  def getCenterY:Int = getY+radius
 
   def onClicked():Unit = {
       fill()
