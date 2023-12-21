@@ -1,24 +1,39 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
+import java.util.Date
+import java.util.concurrent.{ScheduledExecutorService, ThreadPoolExecutor, TimeUnit}
 
 class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   private var circles:Array[Circle] = Array.ofDim[Circle](length)
+  private var filledCirles:Int = 0
   def getX:Int = x
   def getY:Int = y
   def getRadius:Int = radius
 
   def getLength:Int = length
   init()
-  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Boolean = {
-    for(i <- circles.length-1 to 0 by -1){
-     if(!circles(i).is_colored()){
-       circles(i).setColorIndex(clrIndex)
-       circles(i).fill(color)
-       return true
-     }
+  def wait(time:Int):Unit = {
+    var timestampStart = new Date()
+
+    while((new Date()).getTime - timestampStart.getTime < time){
+
     }
-    false
+  }
+  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Boolean = {
+    for(i <- circles.indices){
+      if(!circles(i).is_colored()){
+        circles(i).fill(color)
+        if(i >= 1 && circles(i-1).is_colored()){
+          circles(i-1).empty()
+        }
+      }else{
+        return false
+      }
+      TimeUnit.MILLISECONDS.sleep(250)
+    }
+    filledCirles+=1
+    true
   }
   def changeAllColors(idx:Int,clr:Color): Unit = {
     for(i <- circles.indices){

@@ -25,10 +25,6 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
     graphics.setColor(Color.white)
     graphics.drawFilledCircle(getX, getY, radius*2)
   }
-
-  def onClicked():Unit = {
-      fill()
-  }
   def draw():Unit = {
     drawBorders()
     if(colored) {
@@ -49,6 +45,7 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   def empty():Unit = {
     color = new Color(255,255,255)
     colored = false
+    clearGraphics()
     draw()
   }
   def is_colored():Boolean = colored

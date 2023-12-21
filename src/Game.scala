@@ -25,7 +25,6 @@ class Game {
       data(i).changeAllColors(1,clr2)
     }
   }
-  setColors()
   def onClicked(x:Int,y:Int):Boolean = {
     for (i <- data.indices) {
       if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius))){
