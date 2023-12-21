@@ -1,22 +1,29 @@
 import hevs.graphics.FunGraphics
 
-import java.awt.event.MouseListener
+import java.awt.Color
 
 class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   private var circles:Array[Circle] = Array.ofDim[Circle](length)
   def getX:Int = x
   def getY:Int = y
   def getRadius:Int = radius
+
+  def getLength:Int = length
   init()
-  def onClicked(pX:Int,pY:Int):Boolean = {
-    for(i <- circles.indices){
-      var centerX = circles(i).getCenterX
-      var centerY = circles(i).getCenterY
-      if(Math.sqrt(Math.pow(pX-centerX,2) + Math.pow(pY-centerY,2)) < circles(i).getRadius){
-        circles(i).onClicked()
-      }
+  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Boolean = {
+    for(i <- circles.length-1 to 0 by -1){
+     if(!circles(i).is_colored()){
+       circles(i).setColorIndex(clrIndex)
+       circles(i).fill(color)
+       return true
+     }
     }
     false
+  }
+  def changeAllColors(idx:Int,clr:Color): Unit = {
+    for(i <- circles.indices){
+      if(idx == circles(i).getColorIndex){circles(i).fill(clr)}
+    }
   }
   def init():Unit = {
     for (i <- circles.indices) {

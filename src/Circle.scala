@@ -4,10 +4,27 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
 
   def getX:Int = x
   def getY:Int = y
+  var colorIndex:Int = -1
 
   def getRadius:Int = radius
   def getCenterX:Int = getX+radius
   def getCenterY:Int = getY+radius
+  def getColor():Color = color
+
+  def setColorIndex(idx:Int):Unit = {
+    colorIndex = idx
+  }
+  def getColorIndex:Int = {
+    colorIndex
+  }
+  def setColor(clr:Color):Unit = {
+    color = clr
+    draw()
+  }
+  def clearGraphics():Unit = {
+    graphics.setColor(Color.white)
+    graphics.drawFilledCircle(getX, getY, radius*2)
+  }
 
   def onClicked():Unit = {
       fill()
