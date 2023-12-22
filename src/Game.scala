@@ -15,6 +15,14 @@ class Game {
   var mouseListener = new CustomMouseListener(this)
   init()
 
+  def updateInfoGraphics():Unit = {
+    graphics.setColor(Color.white)
+    graphics.drawFillRect(50,0,100,100)
+    graphics.setColor(Color.black)
+    graphics.drawString(30,75,"Next round :")
+    graphics.setColor(if(index == 1) color1 else color2)
+    graphics.drawFilledCircle(100,50,50)
+  }
   def setColors():Unit = {
     var clr1:Color = JColorChooser.showDialog(null,"test",Color.black)
     var clr2:Color = JColorChooser.showDialog(null,"test",Color.black)
@@ -33,8 +41,11 @@ class Game {
         }else{
           index=0
         }
-        val colored = data(i).onClicked(x,y,if (index %2 == 0) color1 else color2,index)
-        checkWin()
+        val colored = data(i).onClicked(x,y,if (index==0) color1 else color2,index)
+        if(checkWin()){
+          System.exit(0)
+        }
+        updateInfoGraphics()
         return colored
       }
     }
@@ -47,6 +58,7 @@ class Game {
   }
   def checkWin():Boolean = {
     // check 4 horizontal
+
     for(i <- data.indices){
       var follow:Int = 0
       var actualColor:Color = new Color(0,0,0)
@@ -93,9 +105,52 @@ class Game {
         }
       }
     }
-    // check 4 vertical
-    // check 4 diagonals ( both sens)
-    return false
+    for(i <- data.indices){
+      for(j <- data(i).getCircles.indices) {
+        var circles = data(i).getCircles
+        var count = 0
+        var actualColor = Color.white
+        if (data(i).getCircles(j).is_colored()) {
+          for (k <- 0 to 3) {
+            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j+k)) {
+              val c = data(i + k).getCircles(j + k)
+              if (k == 0) {
+                actualColor = c.getColor()
+                count += 1
+              } else {
+                if (actualColor == c.getColor() && c.is_colored()) {
+                  count += 1
+                }
+              }
+              if (count == 4) {
+                print("win diagonaly down")
+                return true
+              }
+            }
+          }
+          count = 0
+          actualColor = Color.white
+          for (k <- 0 to 3) {
+            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j-k)) {
+              val c = data(i + k).getCircles(j-k)
+              if (k == 0) {
+                actualColor = c.getColor()
+                count += 1
+              } else {
+                if (actualColor == c.getColor() && c.is_colored()) {
+                  count += 1
+                }
+              }
+              if (count == 4) {
+                print("win diagonaly up")
+                return true
+              }
+            }
+          }
+        }
+      }
+    }
+    false
   }
 
   private def init():Unit = {
@@ -103,6 +158,7 @@ class Game {
     for (i <- data.indices) {
       data(i) = new CircleColumn(graphics,LENGTH_Y,i*(2*(RADIUS)+20),100,RADIUS)
     }
+    updateInfoGraphics()
   }
   def update():Unit = {
     graphics.clear()

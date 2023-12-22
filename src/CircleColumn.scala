@@ -14,13 +14,6 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getLength:Int = length
   def getCircles:Array[Circle] = circles
   init()
-  def wait(time:Int):Unit = {
-    var timestampStart = new Date()
-
-    while((new Date()).getTime - timestampStart.getTime < time){
-
-    }
-  }
   def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Boolean = {
     for(i <- circles.indices){
       if(!circles(i).is_colored()){

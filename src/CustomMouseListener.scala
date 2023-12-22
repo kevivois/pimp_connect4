@@ -3,7 +3,6 @@ import java.awt.event.{MouseEvent, MouseListener}
 class CustomMouseListener(game:Game) extends MouseListener{
   override def mouseClicked(e: MouseEvent): Unit = {
   }
-
   override def mousePressed(e: MouseEvent): Unit = {
     game.onClicked(e.getX, e.getY)
   }
