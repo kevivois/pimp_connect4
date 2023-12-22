@@ -30,8 +30,11 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
     if(colored) {
       graphics.setColor(color)
       graphics.drawFilledCircle(getX+1, getY+1, (radius*2)-1)
+    }else
+    {
+      graphics.setColor(Color.white)
+      graphics.drawFilledCircle(getX + 1, getY + 1, (radius * 2) - 1)
     }
-    graphics.drawCircle(getCenterX,getCenterY,2)
   }
   private def drawBorders():Unit = {
     graphics.setColor(new Color(0,0,0))

@@ -13,15 +13,17 @@ class Game {
   var color2:Color = Color.yellow
   var index:Int = 0
   var mouseListener = new CustomMouseListener(this)
+  var x:Int = 2*RADIUS+20
+  var y:Int = 100
   init()
 
   def updateInfoGraphics():Unit = {
     graphics.setColor(Color.white)
     graphics.drawFillRect(50,0,100,100)
     graphics.setColor(Color.black)
-    graphics.drawString(30,75,"Next round :")
+    graphics.drawString(30,45,"Next :")
     graphics.setColor(if(index == 1) color1 else color2)
-    graphics.drawFilledCircle(100,50,50)
+    graphics.drawFilledCircle(100,30,40)
   }
   def setColors():Unit = {
     var clr1:Color = JColorChooser.showDialog(null,"test",Color.black)
@@ -156,17 +158,19 @@ class Game {
   private def init():Unit = {
     graphics.addMouseListener(mouseListener)
     for (i <- data.indices) {
-      data(i) = new CircleColumn(graphics,LENGTH_Y,i*(2*(RADIUS)+20),100,RADIUS)
+      data(i) = new CircleColumn(graphics,LENGTH_Y,(i+1)*x,y,RADIUS)
     }
-    updateInfoGraphics()
   }
   def update():Unit = {
     graphics.clear()
     draw()
   }
   def draw():Unit = {
+    graphics.setColor(Color.blue)
+    graphics.drawFillRect(x,y,LENGTH_X*x,LENGTH_Y*2*RADIUS)
     for(i <- data.indices){
       data(i).drawLine()
     }
+    updateInfoGraphics()
   }
 }
