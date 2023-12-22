@@ -12,6 +12,7 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getRadius:Int = radius
 
   def getLength:Int = length
+  def getCircles:Array[Circle] = circles
   init()
   def wait(time:Int):Unit = {
     var timestampStart = new Date()
@@ -30,7 +31,7 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
       }else{
         return false
       }
-      TimeUnit.MILLISECONDS.sleep(250)
+      TimeUnit.MILLISECONDS.sleep(60)
     }
     filledCirles+=1
     true

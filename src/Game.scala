@@ -34,6 +34,7 @@ class Game {
           index=0
         }
         val colored = data(i).onClicked(x,y,if (index %2 == 0) color1 else color2,index)
+        checkWin()
         return colored
       }
     }
@@ -43,6 +44,58 @@ class Game {
     for(i <- data.indices){
       data(i).changeAllColors(idx,clr)
     }
+  }
+  def checkWin():Boolean = {
+    // check 4 horizontal
+    for(i <- data.indices){
+      var follow:Int = 0
+      var actualColor:Color = new Color(0,0,0)
+      for(j <- data(i).getCircles.indices){
+        var circles = data(i).getCircles
+        if(j == 0){
+          actualColor = circles(j).getColor()
+          follow+=1
+        }
+        else{
+          if(actualColor == circles(j).getColor() && circles(j).is_colored()){
+            follow+=1
+          }else{
+            follow=0
+            actualColor = circles(j).getColor()
+          }
+          if(follow >= 3){
+            print("won 4 verticaly")
+            return true
+          }
+        }
+      }
+    }
+    for(i <- data.indices){
+      for(j <- data(i).getCircles.indices){
+        var circles = data(i).getCircles
+        var count:Int = 0
+        var actualColor:Color = new Color(255,255,255)
+        for(k <- i until circles.length){
+          var a = data(k).getCircles(j)
+          if(a.is_colored() && actualColor == a.getColor()){
+            count+=1
+          }else{
+            count =0
+            if(a.is_colored()){
+              actualColor = a.getColor()
+            }
+          }
+          if(count == 3){
+            println("win horizontaly")
+            return true
+          }
+
+        }
+      }
+    }
+    // check 4 vertical
+    // check 4 diagonals ( both sens)
+    return false
   }
 
   private def init():Unit = {
