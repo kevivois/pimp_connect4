@@ -24,7 +24,7 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
       }else{
         return false
       }
-      TimeUnit.MILLISECONDS.sleep(60)
+      Thread.sleep(60)
     }
     filledCirles+=1
     true

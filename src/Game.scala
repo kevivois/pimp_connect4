@@ -35,7 +35,7 @@ class Game {
       data(i).changeAllColors(1,clr2)
     }
   }
-  def onClicked(x:Int,y:Int):Boolean = {
+  def onClicked(x:Int,y:Int):Unit = {
     for (i <- data.indices) {
       if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius))){
         if(index == 0){
@@ -43,15 +43,17 @@ class Game {
         }else{
           index=0
         }
-        val colored = data(i).onClicked(x,y,if (index==0) color1 else color2,index)
-        if(checkWin()){
-          System.exit(0)
-        }
+        val runnable = new CustomRunnable(this,data(i),x,y,if (index==0) color1 else color2,index)
+        val t:Thread = new Thread(runnable)
+        t.start()
         updateInfoGraphics()
-        return colored
       }
     }
-    false
+  }
+  def exit_won(b:Boolean):Unit ={
+    if (b) {
+      System.exit(0)
+    }
   }
   def changeAllColors(idx:Int,clr:Color):Unit = {
     for(i <- data.indices){
@@ -65,7 +67,7 @@ class Game {
       var follow:Int = 0
       var actualColor:Color = new Color(0,0,0)
       for(j <- data(i).getCircles.indices){
-        var circles = data(i).getCircles
+        val circles = data(i).getCircles
         if(j == 0){
           actualColor = circles(j).getColor()
           follow+=1
