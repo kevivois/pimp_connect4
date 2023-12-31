@@ -20,8 +20,7 @@ class Game {
   def updateInfoGraphics():Unit = {
     graphics.setColor(Color.white)
     graphics.drawFillRect(50,0,100,100)
-    graphics.setColor(Color.black)
-    graphics.drawString(30,45,"Next :")
+    graphics.drawString(30,45,"Next :",Color.black,20)
     graphics.setColor(if(index == 1) color1 else color2)
     graphics.drawFilledCircle(100,30,40)
   }
@@ -37,23 +36,29 @@ class Game {
   }
   def onClicked(x:Int,y:Int):Unit = {
     for (i <- data.indices) {
-      if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius))){
+      if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius)) && !data(i).is_full()){
         if(index == 0){
           index=1
         }else{
           index=0
         }
-        val runnable = new CustomRunnable(this,data(i),x,y,if (index==0) color1 else color2,index)
+        /*
+        val runnable = new CheckWinRunnable(this,data(i),x,y,if (index==0) color1 else color2,index)
         val t:Thread = new Thread(runnable)
         t.start()
+        */
+        data(i).onClicked(x, y, if (index==0) color1 else color2, index)
+        val has_won: Boolean = checkWin()
+        if(has_won){
+          Thread.sleep(1000)
+          exit()
+        }
         updateInfoGraphics()
       }
     }
   }
-  def exit_won(b:Boolean):Unit ={
-    if (b) {
+  def exit():Unit ={
       System.exit(0)
-    }
   }
   def changeAllColors(idx:Int,clr:Color):Unit = {
     for(i <- data.indices){

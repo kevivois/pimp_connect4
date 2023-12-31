@@ -14,7 +14,7 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getLength:Int = length
   def getCircles:Array[Circle] = circles
   init()
-  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Boolean = {
+  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Unit = {
     for(i <- circles.indices){
       if(!circles(i).is_colored()){
         circles(i).fill(color)
@@ -22,17 +22,25 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
           circles(i-1).empty()
         }
       }else{
-        return false
+        return
       }
       Thread.sleep(60)
     }
     filledCirles+=1
-    true
   }
   def changeAllColors(idx:Int,clr:Color): Unit = {
     for(i <- circles.indices){
       if(idx == circles(i).getColorIndex){circles(i).fill(clr)}
     }
+  }
+  def is_full():Boolean = {
+    var result:Boolean = true
+    for(circle <- circles){
+      if(!circle.is_colored()){
+        result=false
+      }
+    }
+    result
   }
   def init():Unit = {
     for (i <- circles.indices) {
