@@ -19,11 +19,6 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   }
   def setColor(clr:Color):Unit = {
     color = clr
-    draw()
-  }
-  def clear():Unit = {
-    graphics.setColor(Color.white)
-    graphics.drawFilledCircle(getX, getY, radius*2)
   }
   def draw():Unit = {
     drawBorders()
@@ -48,7 +43,6 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   def empty():Unit = {
     color = new Color(255,255,255)
     colored = false
-    clear()
     draw()
   }
   def is_colored():Boolean = colored
