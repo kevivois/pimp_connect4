@@ -71,86 +71,102 @@ class Game {
       data(i).changeAllColors(idx,clr)
     }
   }
+  def checkWin():Boolean = {
+    // check 4 horizontal
 
-  def checkWin(): Boolean = {
-    def checkLine(line: Seq[Circle]): Boolean = {
-      var count = 0
-      var color: Color = null
-
-      for (circle <- line) {
-        if (circle.is_colored()) {
-          if (color == circle.getColor()) {
-            count += 1
-          } else {
-            count = 1
-            color = circle.getColor()
+    for(i <- data.indices){
+      var follow:Int = 0
+      var actualColor:Color = new Color(0,0,0)
+      for(j <- data(i).getCircles.indices){
+        val circles = data(i).getCircles
+        if(j == 0){
+          actualColor = circles(j).getColor()
+          follow+=1
+        }
+        else{
+          if(actualColor == circles(j).getColor() && circles(j).is_colored()){
+            follow+=1
+          }else{
+            follow=0
+            actualColor = circles(j).getColor()
           }
-
-          if (count >= 4) {
+          if(follow >= 3){
+            print("won 4 verticaly")
             return true
           }
-        } else {
+        }
+      }
+    }
+    for(i <- data.indices){
+      for(j <- data(i).getCircles.indices){
+        var circles = data(i).getCircles
+        var count:Int = 0
+        var actualColor:Color = new Color(255,255,255)
+        for(k <- i until circles.length){
+          var a = data(k).getCircles(j)
+          if(a.is_colored() && actualColor == a.getColor()){
+            count+=1
+          }else{
+            count =0
+            if(a.is_colored()){
+              actualColor = a.getColor()
+            }
+          }
+          if(count == 3){
+            println("win horizontaly")
+            return true
+          }
+
+        }
+      }
+    }
+    for(i <- data.indices){
+      for(j <- data(i).getCircles.indices) {
+        var circles = data(i).getCircles
+        var count = 0
+        var actualColor = Color.white
+        if (data(i).getCircles(j).is_colored()) {
+          for (k <- 0 to 3) {
+            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j+k)) {
+              val c = data(i + k).getCircles(j + k)
+              if (k == 0) {
+                actualColor = c.getColor()
+                count += 1
+              } else {
+                if (actualColor == c.getColor() && c.is_colored()) {
+                  count += 1
+                }
+              }
+              if (count == 4) {
+                print("win diagonaly down")
+                return true
+              }
+            }
+          }
           count = 0
+          actualColor = Color.white
+          for (k <- 0 to 3) {
+            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j-k)) {
+              val c = data(i + k).getCircles(j-k)
+              if (k == 0) {
+                actualColor = c.getColor()
+                count += 1
+              } else {
+                if (actualColor == c.getColor() && c.is_colored()) {
+                  count += 1
+                }
+              }
+              if (count == 4) {
+                print("win diagonaly up")
+                return true
+              }
+            }
+          }
         }
       }
-
-      false
     }
-
-    def checkRows(): Boolean = {
-      for (row <- data) {
-        if (checkLine(row.getCircles)) {
-          println("Win horizontally")
-          return true
-        }
-      }
-      false
-    }
-
-    def checkColumns(): Boolean = {
-      for (i <- data.head.getCircles.indices) {
-        val column = data.map(row => row.getCircles(i))
-        if (checkLine(column)) {
-          println("Win vertically")
-          return true
-        }
-      }
-      false
-    }
-
-    def checkDiagonals(): Boolean = {
-      for {
-        i <- data.indices
-        j <- data(i).getCircles.indices
-        if i + 3 < data.length && j + 3 < data(i).getCircles.length
-      } {
-        val diagonal = for (k <- 0 to 3) yield data(i + k).getCircles(j + k)
-
-        if (checkLine(diagonal)) {
-          println("Win diagonally down")
-          return true
-        }
-      }
-
-      for {
-        i <- data.indices
-        j <- data(i).getCircles.indices
-        if i + 3 < data.length && j - 3 >= 0
-      } {
-        val diagonal = for (k <- 0 to 3) yield data(i + k).getCircles(j - k)
-
-        if (checkLine(diagonal)) {
-          println("Win diagonally up")
-          return true
-        }
-      }
-
-      false
-    }
-
-    checkRows() || checkColumns() || checkDiagonals()
+    false
   }
-
 
   private def init():Unit = {
     for (i <- data.indices) {
