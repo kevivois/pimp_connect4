@@ -18,8 +18,10 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
     for(i <- circles.indices){
       if(!circles(i).is_colored()){
         circles(i).fill(color)
+        circles(i).setColorIndex(clrIndex)
         if(i >= 1 && circles(i-1).is_colored()){
           circles(i-1).empty()
+          circles(i-1).setColorIndex(-1)
         }
       }else{
         return
@@ -30,7 +32,7 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   }
   def changeAllColors(idx:Int,clr:Color): Unit = {
     for(i <- circles.indices){
-      if(idx == circles(i).getColorIndex){circles(i).fill(clr)}
+      if(idx == circles(i).getColorIndex){circles(i).setColor(clr)}
     }
   }
   def is_full():Boolean = {

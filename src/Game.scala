@@ -2,9 +2,12 @@ import hevs.graphics.FunGraphics
 
 import java.awt.Color
 import javax.swing.JColorChooser
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
+
 
 class Game {
- var graphics = new FunGraphics(500,500,200,200,"game",true)
+ var graphics = new FunGraphics(500,500,200,200,"game",false)
   val RADIUS = 20
   val LENGTH_X = 7
   val LENGTH_Y = 6
@@ -16,6 +19,7 @@ class Game {
   graphics.addMouseListener(mouseListener)
   var x:Int = 2*RADIUS+20
   var y:Int = 100
+
   init()
 
   def updateInfoGraphics():Unit = {
@@ -26,14 +30,18 @@ class Game {
     graphics.drawFilledCircle(100,30,40)
   }
   def setColors():Unit = {
-    var clr1:Color = JColorChooser.showDialog(null,"test",Color.black)
-    var clr2:Color = JColorChooser.showDialog(null,"test",Color.black)
+    val clr1:Color = JColorChooser.showDialog(null,"player 1 color ",color1)
+    val clr2:Color = JColorChooser.showDialog(null,"player 2 color",color2)
+    if (clr1 == clr2 || clr1 == Color.white || clr2 == Color.black) {
+      return
+    }
     color1 = clr1
     color2=clr2
     for(i <- data.indices){
       data(i).changeAllColors(0,clr1)
       data(i).changeAllColors(1,clr2)
     }
+    updateInfoGraphics();
   }
   def onClicked(x:Int,y:Int):Unit = {
     for (i <- data.indices) {
@@ -51,7 +59,7 @@ class Game {
         data(i).onClicked(x, y, if (index==0) color1 else color2, index)
         val has_won: Boolean = checkWin()
         if(has_won){
-          Thread.sleep(1000)
+          Thread.sleep(500)
           reset();
         }
         updateInfoGraphics()
@@ -61,7 +69,6 @@ class Game {
   def reset():Unit = {
     init();
     update();
-
   }
   def exit():Unit ={
       System.exit(0)
@@ -97,7 +104,7 @@ class Game {
         }
       }
     }
-    for(i <- data.indices){
+    /*for(i <- data.indices){
       for(j <- data(i).getCircles.indices){
         var circles = data(i).getCircles
         var count:Int = 0
@@ -119,25 +126,43 @@ class Game {
 
         }
       }
-    }
+    }*/
     for(i <- data.indices){
       for(j <- data(i).getCircles.indices) {
         var circles = data(i).getCircles
-        var count = 0
-        var actualColor = Color.white
+        var count: Int = 0
+        var actualColor: Color = Color.white
+        for (k <- i until circles.length) {
+          val a = data(k).getCircles(j)
+          if (a.is_colored() && actualColor == a.getColor()) {
+            count += 1
+          } else {
+            count = 0
+            if (a.is_colored()) {
+              actualColor = a.getColor()
+            }
+          }
+          if (count == 3) {
+            println("win horizontaly")
+            return true
+          }
+        }
+
+        circles = data(i).getCircles
+        count = 0
+        actualColor = Color.white
         if (data(i).getCircles(j).is_colored()) {
           for (k <- 0 to 3) {
             if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j+k)) {
               val c = data(i + k).getCircles(j + k)
               if (k == 0) {
                 actualColor = c.getColor()
-                count += 1
               } else {
                 if (actualColor == c.getColor() && c.is_colored()) {
                   count += 1
                 }
               }
-              if (count == 4) {
+              if (count == 3) {
                 print("win diagonaly down")
                 return true
               }
@@ -150,13 +175,12 @@ class Game {
               val c = data(i + k).getCircles(j-k)
               if (k == 0) {
                 actualColor = c.getColor()
-                count += 1
               } else {
                 if (actualColor == c.getColor() && c.is_colored()) {
                   count += 1
                 }
               }
-              if (count == 4) {
+              if (count == 3) {
                 print("win diagonaly up")
                 return true
               }
@@ -179,7 +203,7 @@ class Game {
   }
   def draw():Unit = {
     graphics.setColor(Color.blue)
-    graphics.drawFillRect(x,y,LENGTH_X*x,LENGTH_Y*2*RADIUS)
+    graphics.drawFillRect(x,y,(LENGTH_X)*x, LENGTH_Y*2*RADIUS)
     for(i <- data.indices){
       data(i).drawLine()
     }

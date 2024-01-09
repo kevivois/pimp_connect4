@@ -1,4 +1,4 @@
 object Main extends App {
-  var game = new Game()
-  game.draw()
+  var game:Game = new Game()
+  game.draw();
 }

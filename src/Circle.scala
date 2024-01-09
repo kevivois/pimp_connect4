@@ -1,5 +1,7 @@
 import java.awt.Color
-import  hevs.graphics.FunGraphics
+import hevs.graphics.FunGraphics
+
+
 class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boolean,var color:Color=Color.red) {
 
   def getX:Int = x
@@ -9,6 +11,7 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   def getRadius:Int = radius
   def getCenterX:Int = getX+radius
   def getCenterY:Int = getY+radius
+
   def getColor():Color = color
 
   def setColorIndex(idx:Int):Unit = {
@@ -19,9 +22,10 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   }
   def setColor(clr:Color):Unit = {
     color = clr
+    draw();
   }
   def draw():Unit = {
-    drawBorders()
+    drawBorders();
     if(colored) {
       graphics.setColor(color)
       graphics.drawFilledCircle(getX+1, getY+1, (radius*2)-1)
