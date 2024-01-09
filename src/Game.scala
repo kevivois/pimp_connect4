@@ -1,25 +1,37 @@
-import java.awt.Color
+class Game(g: Grid) {
 
-class Game {
-  var p1: Boolean = false
-  var p2: Boolean = false
-  var circle_list: Array[Array[Circle]] = Array.ofDim(7,6)
+  private var idx: Int = 0
+  private var end: Boolean = false
 
-  def changeCircleColor(p: Int,c: Circle) : Unit = {
-    if(p == 0){
-      c.color = chooseColor(p)
-    } else {
-      c.color = chooseColor(p)
+  /*
+  * Main class
+  */
+  def play(): Unit = {
+    idx = 0
+    println(g.drawGrid())
+    do{
+      g.showSymbol(chooseColumn())
+      idx += 1
+      checkWin()
+    } while (!end)
+  }
+
+  /*
+  * Gives the possibility to choose a Column using the Input Class
+  * Big thanks for ISC Team!
+  */
+  def chooseColumn(): Int = {
+    var i: Int = 0
+    do {
+      print("Please enter a column (1-7): ")
+      i = Input.readInt()
+    } while(i < 1 || i > 7)
+    i
+  }
+
+  def checkWin(): Unit = {
+    if(idx == 42){
+      end = true
     }
   }
-
-  def chooseColor(p: Int) : Color = {
-    var color: Color = new Color(0,0,0)
-    return color
-  }
-
-  def checkWin() : Unit = {
-
-  }
-
 }
