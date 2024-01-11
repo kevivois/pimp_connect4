@@ -14,7 +14,7 @@ class CustomMouseListener(game:Game) extends MouseListener{
       click = new Date();
     }
     if(delta <= 200){
-      game.onClicked(e.getX, e.getY)
+      game.setColors()
     }else{
       game.onClicked(e.getX, e.getY)
     }

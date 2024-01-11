@@ -1,6 +1,8 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
+import java.awt.geom.Point2D
+import java.util.Date
 import javax.swing.JColorChooser
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
@@ -51,17 +53,12 @@ class Game {
         }else{
           index=0
         }
-        /*
-        val runnable = new CheckWinRunnable(this,data(i),x,y,if (index==0) color1 else color2,index)
-        val t:Thread = new Thread(runnable)
-        t.start()
-        */
-        data(i).onClicked(x, y, if (index==0) color1 else color2, index)
+        data(i).onClicked(x,y, if (index==0) color1 else color2, index)
         val has_won: Boolean = checkWin()
-        if(has_won){
+        /*if(has_won){
           Thread.sleep(500)
           reset();
-        }
+        }*/
         updateInfoGraphics()
       }
     }
@@ -78,83 +75,64 @@ class Game {
       data(i).changeAllColors(idx,clr)
     }
   }
-  def checkWin():Boolean = {
-    // check 4 horizontal
 
-    for(i <- data.indices){
-      var follow:Int = 0
-      var actualColor:Color = new Color(0,0,0)
-      for(j <- data(i).getCircles.indices){
-        val circles = data(i).getCircles
-        if(j == 0){
-          actualColor = circles(j).getColor()
-          follow+=1
-        }
-        else{
-          if(actualColor == circles(j).getColor() && circles(j).is_colored()){
-            follow+=1
+  def checkWin(): Boolean = {
+    for (i: Int <- data.indices) {
+      var count: Int = 0
+      var actualColor: Color = Color.white
+      for (j: Int <- data(i).getCircles.indices) {
+        val circles: Array[Circle] = data(i).getCircles
+        val c = circles(j)
+        if(c.is_colored()){
+          if(actualColor == Color.white){
+            actualColor = c.getColor()
+          }
+          if(actualColor == c.getColor()){
+            count+=1
           }else{
-            follow=0
-            actualColor = circles(j).getColor()
+            actualColor=c.getColor()
           }
-          if(follow >= 3){
-            print("won 4 verticaly")
-            return true
-          }
+        }else{
+          actualColor = Color.white
+        }
+        if(count>=4){
+          print("won vertically")
+          return true
         }
       }
     }
-    /*for(i <- data.indices){
-      for(j <- data(i).getCircles.indices){
-        var circles = data(i).getCircles
-        var count:Int = 0
-        var actualColor:Color = new Color(255,255,255)
-        for(k <- i until circles.length){
-          var a = data(k).getCircles(j)
-          if(a.is_colored() && actualColor == a.getColor()){
-            count+=1
-          }else{
-            count =0
-            if(a.is_colored()){
-              actualColor = a.getColor()
-            }
-          }
-          if(count == 3){
-            println("win horizontaly")
-            return true
-          }
-
-        }
-      }
-    }*/
-    for(i <- data.indices){
-      for(j <- data(i).getCircles.indices) {
-        var circles = data(i).getCircles
+    for (i <- data.indices) {
+      for (j <- data(i).getCircles.indices) {
         var count: Int = 0
         var actualColor: Color = Color.white
-        for (k <- i until circles.length) {
-          val a = data(k).getCircles(j)
-          if (a.is_colored() && actualColor == a.getColor()) {
-            count += 1
-          } else {
-            count = 0
+        for (k <- 0 to 3) {
+          if(data.indices.contains(i+k)) {
+            val a = data(i + k).getCircles(j)
             if (a.is_colored()) {
-              actualColor = a.getColor()
+              if(actualColor == Color.white){
+                actualColor = a.getColor()
+              }
+              if (actualColor == a.getColor()) {
+                count += 1
+              } else {
+                count=0
+                actualColor = a.getColor()
+              }
+            }else{
+              actualColor = Color.white
+            }
+            if (count >= 4) {
+              println(s"win horizontaly ")
+              return true
             }
           }
-          if (count == 3) {
-            println("win horizontaly")
-            return true
-          }
         }
-
-        circles = data(i).getCircles
         count = 0
         actualColor = Color.white
         if (data(i).getCircles(j).is_colored()) {
           for (k <- 0 to 3) {
-            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j+k)) {
-              val c = data(i + k).getCircles(j + k)
+            if (data.indices.contains(i + k) && data(i + k).getCircles.indices.contains(j + k)) {
+              val c: Circle = data(i + k).getCircles(j + k)
               if (k == 0) {
                 actualColor = c.getColor()
               } else {
@@ -170,9 +148,9 @@ class Game {
           }
           count = 0
           actualColor = Color.white
-          for (k <- 0 to 3) {
-            if (data.indices.contains(i + k) && data(i+k).getCircles.indices.contains(j-k)) {
-              val c = data(i + k).getCircles(j-k)
+          for (k: Int <- 0 to 3) {
+            if (data.indices.contains(i + k) && data(i + k).getCircles.indices.contains(j - k)) {
+              val c: Circle = data(i + k).getCircles(j - k)
               if (k == 0) {
                 actualColor = c.getColor()
               } else {
@@ -190,6 +168,7 @@ class Game {
       }
     }
     false
+
   }
 
   private def init():Unit = {

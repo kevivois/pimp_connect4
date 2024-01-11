@@ -1,6 +1,7 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
+import java.awt.geom.Point2D
 import java.util.Date
 import java.util.concurrent.{ScheduledExecutorService, ThreadPoolExecutor, TimeUnit}
 
@@ -14,7 +15,8 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getLength:Int = length
   def getCircles:Array[Circle] = circles
   init()
-  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Unit = {
+  def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Int = {
+    var lastPosition:Int = -1
     for(i <- circles.indices){
       if(!circles(i).is_colored()){
         circles(i).fill(color)
@@ -23,12 +25,14 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
           circles(i-1).empty()
           circles(i-1).setColorIndex(-1)
         }
+        lastPosition = i
       }else{
-        return
+        return lastPosition
       }
       Thread.sleep(60)
     }
     filledCirles+=1
+    return lastPosition
   }
   def changeAllColors(idx:Int,clr:Color): Unit = {
     for(i <- circles.indices){
