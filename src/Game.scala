@@ -1,6 +1,4 @@
-import scala.sys.process._
-
-class Game(g: Grid = new Grid()) {
+class Game(g: Grid = new Grid(7, 6)) {
 
   private var moveCount: Int = 0
   private var numToWin: Int = 4
