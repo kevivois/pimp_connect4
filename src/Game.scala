@@ -1,6 +1,6 @@
 class Game(g: Grid) {
 
-  private var moveCount: Int = 1
+  private var moveCount: Int = 0
 
   /*
   * Play method
@@ -13,6 +13,7 @@ class Game(g: Grid) {
         moveCount += 1
       }
       g.showSymbol(columnChoice)
+      println(moveCount)
     } while (!checkWin())
   }
 
@@ -22,7 +23,7 @@ class Game(g: Grid) {
   def chooseColumn(): Int = {
     var i: Int = 0
     do {
-      print("Please enter a column (1-7): ")
+      print("\rPlease enter a column (1-7): ")
       i = Input.readInt()
     } while(i < 1 || i > 7)
     i
@@ -33,9 +34,26 @@ class Game(g: Grid) {
   */
   private def checkWin(): Boolean = {
     var end: Boolean = false
-    val currentPlayer: String = if (moveCount % 2 == 0) "X" else "O"
+    val currentPlayer: String = if (moveCount % 2 == 0) "O" else "X"
 
     // Horizontal check
+    for (i <- 0 until g.getY()) {
+      var playerCount: Int = 0
+      for (j <- 0 until g.getX()) {
+        if (g.getGrid()(i)(j) == currentPlayer) {
+          playerCount += 1
+          if (playerCount == 4) {
+            end = true
+            println(s"$currentPlayer has won!")
+            replay()
+          }
+        } else {
+          playerCount = 0
+        }
+      }
+    }
+
+    // Vertical check
     for (i <- 0 until g.getY()) {
       var playerCount: Int = 0
       for (j <- 0 until g.getX()) {
@@ -63,6 +81,7 @@ class Game(g: Grid) {
 
   def replay(): Unit = {
     g.clearGrid()
+    moveCount = 0
     print("Do you want to replay ? (y/n): ")
     if(Input.readChar().toLower == 'y'){
       play()
