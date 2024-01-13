@@ -8,6 +8,8 @@ class Grid(x: Int, y: Int) {
   def getX(): Int = return x
   def getY(): Int = return y
   def getGrid(): Array[Array[String]] = return grid_2d
+
+  // Clears the grid for replay
   def clearGrid(): Unit = {
     for(i<- 0 until y){
       for(j<- 0 until x){
