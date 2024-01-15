@@ -1,81 +1,108 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
-import java.awt.geom.Point2D
-import java.util.Date
 import javax.swing.JColorChooser
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 
 
+/**
+ * Classe permettant de lancer et de gérer une ou plusieurs parties de Puissance 4
+ */
 class Game {
- var graphics = new FunGraphics(500,500,200,200,"game",false)
-  val RADIUS = 20
-  val LENGTH_X = 7
-  val LENGTH_Y = 6
+  var graphics = new FunGraphics(500,500,200,200,"Connect Four",true)
+  val RADIUS:Int = 20
+  val LENGTH_X:Int = 7
+  val LENGTH_Y:Int = 6
+  val OFFSET_BETWEEN_CIRCLE:Int = RADIUS/2
+  var player_won:String = ""
   var data:Array[CircleColumn] = Array.ofDim[CircleColumn](LENGTH_X)
   var color1:Color = Color.red
   var color2:Color = Color.yellow
+  var count:Int = 0
   var index:Int = 0
-  var mouseListener = new CustomMouseListener(this)
+  var mouseListener:CustomMouseListener = new CustomMouseListener(this)
   graphics.addMouseListener(mouseListener)
-  var x:Int = 2*RADIUS+20
+  var x:Int = 50
   var y:Int = 100
 
   init()
 
-  def updateInfoGraphics():Unit = {
+
+  /**
+   * Fonction permettant d'actualiser les informations des utilisateurs sur l'interface graphique
+   */
+  def updateInfoGraphics:Unit = {
     graphics.setColor(Color.white)
     graphics.drawFillRect(50,0,100,100)
     graphics.drawString(30,45,"Next :",Color.black,20)
-    graphics.setColor(if(index == 1) color1 else color2)
-    graphics.drawFilledCircle(100,30,40)
+    graphics.setColor(if (index == 1) color1 else color2)
+    graphics.drawFilledCircle(90, 20, 40)
+
+    graphics.drawString(275,40,str="Player 1 :",Color.black,size=20)
+    graphics.setColor(color1);
+    graphics.drawFilledCircle(370,15,40)
+    graphics.drawString(275,80,str="Player 2 :",Color.black,size=20)
+    graphics.setColor(color2);
+    graphics.drawFilledCircle(370,55,40)
   }
+
+  /**
+   * Fonction permettant de choisir les couleurs des deux utilisateurs
+   */
   def setColors():Unit = {
     val clr1:Color = JColorChooser.showDialog(null,"player 1 color ",color1)
     val clr2:Color = JColorChooser.showDialog(null,"player 2 color",color2)
-    if (clr1 == clr2 || clr1 == Color.white || clr2 == Color.black) {
+    if (clr1 == clr2 || clr1 == Color.white  || clr1 == Color.black || clr2 == Color.white  || clr2 == Color.black) {
       return
     }
     color1 = clr1
-    color2=clr2
+    color2 = clr2
     for(i <- data.indices){
       data(i).changeAllColors(0,clr1)
       data(i).changeAllColors(1,clr2)
     }
-    updateInfoGraphics();
+    updateInfoGraphics;
   }
+
+  /**
+   * Fonction permettant de gérer le clique de l'utilisateur sur l'interface graphique
+   * @param x
+   * @param y
+   */
   def onClicked(x:Int,y:Int):Unit = {
-    for (i <- data.indices) {
+    for (i:Int <- data.indices) {
       if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius)) && !data(i).is_full()){
         if(index == 0){
           index=1
         }else{
           index=0
         }
-        data(i).onClicked(x,y, if (index==0) color1 else color2, index)
+        count += + data(i).onClicked(x,y, if (index==0) color1 else color2, index)
         val has_won: Boolean = checkWin()
-        /*if(has_won){
+        if(has_won){
           Thread.sleep(500)
           reset();
-        }*/
-        updateInfoGraphics()
+        }
+        updateInfoGraphics
       }
     }
   }
+
+  /**
+   * Fonction permettant de reset l'affichage
+   */
   def reset():Unit = {
+    graphics.clear();
+    graphics.drawString(200,200,s"${player_won} has won !",color=Color.black,size=20)
+    Thread.sleep(5000)
+    count=0
+    index = if(index == 1) 0 else 1
     init();
     update();
   }
-  def exit():Unit ={
-      System.exit(0)
-  }
-  def changeAllColors(idx:Int,clr:Color):Unit = {
-    for(i <- data.indices){
-      data(i).changeAllColors(idx,clr)
-    }
-  }
-
+  /**
+   * Fonction permettant de vérifier si un des utilisateur à gagné
+   * @return vrai si un des utilisateur à gagné
+   */
   def checkWin(): Boolean = {
     for (i: Int <- data.indices) {
       var count: Int = 0
@@ -97,6 +124,7 @@ class Game {
         }
         if(count>=4){
           print("won vertically")
+          player_won = if(color1 == actualColor) "player 1" else "player2"
           return true
         }
       }
@@ -122,6 +150,7 @@ class Game {
               actualColor = Color.white
             }
             if (count >= 4) {
+              player_won = if(color1 == actualColor) "player 1" else "player2"
               println(s"win horizontaly ")
               return true
             }
@@ -141,6 +170,7 @@ class Game {
                 }
               }
               if (count == 3) {
+                player_won = if(color1 == actualColor) "player 1" else "player2"
                 print("win diagonaly down")
                 return true
               }
@@ -159,6 +189,7 @@ class Game {
                 }
               }
               if (count == 3) {
+                player_won = if(color1 == actualColor) "player 1" else "player2"
                 print("win diagonaly up")
                 return true
               }
@@ -167,25 +198,33 @@ class Game {
         }
       }
     }
+    if(count == LENGTH_Y*LENGTH_X){
+      player_won = "no one"
+      return true
+    }
     false
 
   }
 
   private def init():Unit = {
     for (i <- data.indices) {
-      data(i) = new CircleColumn(graphics,LENGTH_Y,(i+1)*x,y,RADIUS)
+      data(i) = new CircleColumn(graphics,LENGTH_Y,(i*2*(RADIUS+OFFSET_BETWEEN_CIRCLE))+x,y,RADIUS)
     }
   }
   def update():Unit = {
     graphics.clear()
     draw()
   }
-  def draw():Unit = {
+
+  def draw(): Unit = {
     graphics.setColor(Color.blue)
-    graphics.drawFillRect(x,y,(LENGTH_X)*x, LENGTH_Y*2*RADIUS)
-    for(i <- data.indices){
+    val boardWidth = 2 * LENGTH_X * (RADIUS + OFFSET_BETWEEN_CIRCLE)
+    val boardHeight = 2 * RADIUS * LENGTH_Y
+    graphics.drawFillRect(x, y, boardWidth - RADIUS, boardHeight)
+    for (i <- data.indices) {
       data(i).drawLine()
     }
-    updateInfoGraphics()
+    updateInfoGraphics
   }
+
 }
