@@ -1,3 +1,5 @@
+package WithUi
+
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
@@ -8,21 +10,21 @@ import javax.swing.JColorChooser
  * Classe permettant de lancer et de gérer une ou plusieurs parties de Puissance 4
  */
 class Game {
-  var graphics = new FunGraphics(500,500,200,200,"Connect Four",true)
-  val RADIUS:Int = 20
-  val LENGTH_X:Int = 7
-  val LENGTH_Y:Int = 6
-  val OFFSET_BETWEEN_CIRCLE:Int = RADIUS/2
-  var player_won:String = ""
-  var data:Array[CircleColumn] = Array.ofDim[CircleColumn](LENGTH_X)
-  var color1:Color = Color.red
-  var color2:Color = Color.yellow
-  var count:Int = 0
-  var index:Int = 0
-  var mouseListener:CustomMouseListener = new CustomMouseListener(this)
+  var graphics = new FunGraphics(500, 500, 200, 200, "Connect Four", true)
+  val RADIUS: Int = 20
+  val LENGTH_X: Int = 7
+  val LENGTH_Y: Int = 6
+  val OFFSET_BETWEEN_CIRCLE: Int = RADIUS / 2
+  var player_won: String = ""
+  var data: Array[CircleColumn] = Array.ofDim[CircleColumn](LENGTH_X)
+  var color1: Color = Color.red
+  var color2: Color = Color.yellow
+  var count: Int = 0
+  var index: Int = 0
+  var mouseListener: CustomMouseListener = new CustomMouseListener(this)
   graphics.addMouseListener(mouseListener)
-  var posX:Int = 50
-  var posY:Int = 100
+  var posX: Int = 50
+  var posY: Int = 100
 
   init()
 
@@ -30,52 +32,53 @@ class Game {
   /**
    * Fonction permettant d'actualiser les informations des utilisateurs sur l'interface graphique
    */
-  def updateInfoGraphics:Unit = {
+  def updateInfoGraphics: Unit = {
     graphics.setColor(Color.white)
-    graphics.drawFillRect(50,0,100,100)
-    graphics.drawString(30,45,"Next :",Color.black,20)
+    graphics.drawFillRect(50, 0, 100, 100)
+    graphics.drawString(30, 45, "Next :", Color.black, 20)
     graphics.setColor(if (index == 1) color1 else color2)
     graphics.drawFilledCircle(90, 20, 40)
 
-    graphics.drawString(275,40,str="Player 1 :",Color.black,size=20)
+    graphics.drawString(275, 40, str = "Player 1 :", Color.black, size = 20)
     graphics.setColor(color1);
-    graphics.drawFilledCircle(370,15,40)
-    graphics.drawString(275,80,str="Player 2 :",Color.black,size=20)
+    graphics.drawFilledCircle(370, 15, 40)
+    graphics.drawString(275, 80, str = "Player 2 :", Color.black, size = 20)
     graphics.setColor(color2);
-    graphics.drawFilledCircle(370,55,40)
+    graphics.drawFilledCircle(370, 55, 40)
   }
 
   /**
    * Fonction permettant de choisir les couleurs des deux utilisateurs
    */
-  def setColors():Unit = {
-    val clr1:Color = JColorChooser.showDialog(null,"player 1 color ",color1)
-    val clr2:Color = JColorChooser.showDialog(null,"player 2 color",color2)
-    color1 = if(clr1 != Color.white && clr1 != Color.black && clr1 != clr2) clr1 else color1
-    color2 = if(clr2 != Color.white && clr2 != Color.black && clr2 != clr2) clr1 else color2
-    for(i <- data.indices){
-      data(i).changeAllColors(0,color1)
-      data(i).changeAllColors(1,color2)
+  def setColors(): Unit = {
+    val clr1: Color = JColorChooser.showDialog(null, "player 1 color ", color1)
+    val clr2: Color = JColorChooser.showDialog(null, "player 2 color", color2)
+    color1 = if (clr1 != Color.white && clr1 != Color.black && clr1 != clr2) clr1 else color1
+    color2 = if (clr2 != Color.white && clr2 != Color.black && clr2 != clr1) clr2 else color2
+    for (i <- data.indices) {
+      data(i).changeAllColors(0, color1)
+      data(i).changeAllColors(1, color2)
     }
     updateInfoGraphics;
   }
 
   /**
    * Fonction permettant de gérer le clic de l'utilisateur sur l'interface graphique
+   *
    * @param x cordonnée x du clic de l'utilisateur
    * @param y cordonnée y du clic de l'utilisateur
    */
-  def onClicked(x:Int,y:Int):Unit = {
-    for (i:Int <- data.indices) {
-      if(x >= data(i).getX && x <= data(i).getX + (data(i).getRadius*2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength*2*data(i).getRadius)) && !data(i).is_full()){
-        if(index == 0){
-          index=1
-        }else{
-          index=0
+  def onClicked(x: Int, y: Int): Unit = {
+    for (i: Int <- data.indices) {
+      if (x >= data(i).getX && x <= data(i).getX + (data(i).getRadius * 2) && y >= data(i).getY && y <= (data(i).getY + (data(i).getLength * 2 * data(i).getRadius)) && !data(i).is_full()) {
+        if (index == 0) {
+          index = 1
+        } else {
+          index = 0
         }
-        count += + data(i).onClicked(x,y, if (index==0) color1 else color2, index)
+        count += +data(i).onClicked(x, y, if (index == 0) color1 else color2, index)
         val has_won: Boolean = checkWin()
-        if(has_won){
+        if (has_won) {
           Thread.sleep(500)
           reset();
         }
@@ -87,17 +90,19 @@ class Game {
   /**
    * Fonction permettant de reset l'affichage
    */
-  def reset():Unit = {
+  def reset(): Unit = {
     graphics.clear();
-    graphics.drawString(180,250,s"${player_won} has won !",color=Color.black,size=20)
+    graphics.drawString(180, 250, s"${player_won} has won !", color = Color.black, size = 20)
     Thread.sleep(5000)
-    count=0
-    index = if(index == 1) 0 else 1
+    count = 0
+    index = if (index == 1) 0 else 1
     init();
     update();
   }
+
   /**
    * Fonction permettant de vérifier si un des utilisateur à gagné
+   *
    * @return vrai si un des utilisateur à gagné
    */
   def checkWin(): Boolean = {
@@ -107,21 +112,21 @@ class Game {
       for (j: Int <- data(i).getCircles.indices) { // vérification verticale
         val circles: Array[Circle] = data(i).getCircles
         val c = circles(j)
-        if(c.is_colored()){
-          if(actualColor == Color.white){
+        if (c.is_colored()) {
+          if (actualColor == Color.white) {
             actualColor = c.getColor()
           }
-          if(actualColor == c.getColor()){
-            count+=1
-          }else{
-            actualColor=c.getColor()
+          if (actualColor == c.getColor()) {
+            count += 1
+          } else {
+            actualColor = c.getColor()
           }
-        }else{
+        } else {
           actualColor = Color.white
         }
-        if(count>=4){
+        if (count >= 4) {
           print("won vertically")
-          player_won = if(color1 == actualColor) "player 1" else "player2"
+          player_won = if (color1 == actualColor) "player 1" else "player2"
           return true
         }
       }
@@ -131,23 +136,23 @@ class Game {
         var count: Int = 0
         var actualColor: Color = Color.white
         for (k <- 0 to 3) {
-          if(data.indices.contains(i+k)) {
+          if (data.indices.contains(i + k)) {
             val a = data(i + k).getCircles(j)
             if (a.is_colored()) {
-              if(actualColor == Color.white){
+              if (actualColor == Color.white) {
                 actualColor = a.getColor()
               }
               if (actualColor == a.getColor()) {
                 count += 1
               } else {
-                count=0
+                count = 0
                 actualColor = a.getColor()
               }
-            }else{
+            } else {
               actualColor = Color.white
             }
             if (count >= 4) {
-              player_won = if(color1 == actualColor) "player 1" else "player2" // vérification horizontale
+              player_won = if (color1 == actualColor) "player 1" else "player2" // vérification horizontale
               println(s"win horizontaly ")
               return true
             }
@@ -167,7 +172,7 @@ class Game {
                 }
               }
               if (count == 3) {
-                player_won = if(color1 == actualColor) "player 1" else "player2" // vérification diagonale descendante
+                player_won = if (color1 == actualColor) "player 1" else "player2" // vérification diagonale descendante
                 print("win diagonaly down")
                 return true
               }
@@ -186,7 +191,7 @@ class Game {
                 }
               }
               if (count == 3) {
-                player_won = if(color1 == actualColor) "player 1" else "player2"  // vérification diagonale montante
+                player_won = if (color1 == actualColor) "player 1" else "player2" // vérification diagonale montante
                 print("win diagonaly up")
                 return true
               }
@@ -195,7 +200,7 @@ class Game {
         }
       }
     }
-    if(count == LENGTH_Y*LENGTH_X){   // vérification quand touts les cercles sont remplis
+    if (count == LENGTH_Y * LENGTH_X) { // vérification quand touts les cercles sont remplis
       player_won = "no one"
       return true
     }
@@ -206,12 +211,13 @@ class Game {
   /**
    * Function permettant d'initialiser le contenu de chaque colonne
    */
-  private def init():Unit = {
+  private def init(): Unit = {
     for (i <- data.indices) {
-      data(i) = new CircleColumn(graphics,LENGTH_Y,(i*2*(RADIUS+OFFSET_BETWEEN_CIRCLE))+posX,posY,RADIUS)
+      data(i) = new CircleColumn(graphics, LENGTH_Y, (i * 2 * (RADIUS + OFFSET_BETWEEN_CIRCLE)) + posX, posY, RADIUS)
     }
   }
-  def update():Unit = {
+
+  def update(): Unit = {
     graphics.clear()
     draw()
   }
