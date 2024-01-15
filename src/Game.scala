@@ -7,17 +7,37 @@ class Game(g: Grid = new Grid(7, 6)) {
   * Play method
   */
   def play(): Unit = {
+    var reset: Boolean = false
     println(g.drawGrid())
-    do {
+    while (true) {
+      if (reset) {
+        moveCount = 0
+        g.clearGrid()
+        println(g.drawGrid())
+        reset = false
+      }
+
+      // Doesn't show the Next move at the beginning
+      if (moveCount != 0) {
+        println(s"Next move : ${g.getNextPlayer()}")
+      }
       val columnChoice: Int = chooseColumn()
+      g.setSymbol(columnChoice)
+      println(g.drawGrid())
+
+      // Used to increment the moveCount only if a column is not full
       if (!g.isColumnFull(columnChoice)) {
         moveCount += 1
       }
-      g.showSymbol(columnChoice)
-      if (!checkWin()) {
-        println(s"Next move : ${g.getNextPlayer()}")
+
+      if (checkWin()) {
+        if (replay()) {
+          reset = true
+        } else {
+          System.exit(0);
+        }
       }
-    } while (!checkWin())
+    }
   }
 
   /*
@@ -36,8 +56,7 @@ class Game(g: Grid = new Grid(7, 6)) {
   * Checks after every move of a player if he/she won.
   */
   private def checkWin(): Boolean = {
-    var end: Boolean = false
-    val currentPlayer: String = if (moveCount % 2 == 0) "O" else "X"
+    val currentPlayer = g.getPlayer()
 
     // Horizontal check
     for (i <- 0 until g.getY()) {
@@ -46,9 +65,8 @@ class Game(g: Grid = new Grid(7, 6)) {
         if (g.getGrid()(i)(j) == currentPlayer) {
           playerCount += 1
           if (playerCount == numToWin) {
-            end = true
-            println(Console.GREEN + s"$currentPlayer has won! *Horizontal")
-            replay()
+            println(s"$currentPlayer has won! *Horizontal")
+            return true
           }
         } else {
           playerCount = 0
@@ -63,9 +81,8 @@ class Game(g: Grid = new Grid(7, 6)) {
         if (g.getGrid()(j)(i) == currentPlayer) {
           playerCount += 1
           if (playerCount == numToWin) {
-            end = true
-            println(Console.GREEN + s"$currentPlayer has won! *Vertical")
-            replay()
+            println(s"$currentPlayer has won! *Vertical")
+            return true
           }
         } else {
           playerCount = 0
@@ -81,10 +98,9 @@ class Game(g: Grid = new Grid(7, 6)) {
           if (g.getGrid()(i + k)(j + k) == currentPlayer) {
             playerCount += 1
             if (playerCount == numToWin) {
-              end = true
-              println(Console.GREEN + s"$currentPlayer has won! *Diagonal Top-Left")
+              println(s"$currentPlayer has won! *Diagonal Top-Left")
               playerCount = 0
-              replay()
+              return true
             }
           } else {
             playerCount = 0
@@ -102,9 +118,8 @@ class Game(g: Grid = new Grid(7, 6)) {
           if (g.getGrid()(i + k)(j - k) == currentPlayer) {
             playerCount += 1
             if (playerCount == numToWin) {
-              end = true
-              println(Console.GREEN + s"$currentPlayer has won! *Diagonal Top-Right")
-              replay()
+              println(s"$currentPlayer has won! *Diagonal Top-Right")
+              return true
             }
           } else {
             playerCount = 0
@@ -114,12 +129,11 @@ class Game(g: Grid = new Grid(7, 6)) {
     }
 
     // Check for a draw
-    if (!end && moveCount == g.getX() * g.getY()) {
-      end = true
+    if (moveCount == g.getX() * g.getY()) {
       println("Nobody has won...")
-      replay()
+      return true
     }
-    end
+    false
   }
 
   def clearScreen(): Unit = {
@@ -128,16 +142,13 @@ class Game(g: Grid = new Grid(7, 6)) {
     }
   }
 
-  def replay(): Unit = {
-    g.clearGrid()
-    moveCount = 0
+  def replay(): Boolean = {
     print(Console.RESET + "Do you want to replay ? (y/n): ")
     if (Input.readChar().toLower == 'y') {
-      clearScreen()
-      play()
+      true
     } else {
       println("Thanks for playing")
-      System.exit(0)
+      false
     }
   }
 }
