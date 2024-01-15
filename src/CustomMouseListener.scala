@@ -1,11 +1,21 @@
 import java.awt.event.{MouseEvent, MouseListener}
 import java.util.Date
 
+/**
+ * Classe permettant de gérer les clics de l'utilisateur sur l'interface graphique
+ * @param game
+ */
 class CustomMouseListener(game:Game) extends MouseListener{
   var click:Date = null;
   var delta:Long = 10000
   override def mouseClicked(e: MouseEvent): Unit = {
   }
+
+  /**
+   * Fonction qui est appelé à chaque clic de l'utilisateur , il appèle la fonction qui gère le clic de l'utilisateur dans l'instance du jeu ou
+   * le changement de couleur lorsque c'est un double clic
+   * @param e
+   */
   override def mousePressed(e: MouseEvent): Unit = {
     if(click == null){
       click = new Date();

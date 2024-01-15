@@ -22,9 +22,9 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   init()
 
   /**
-   * Fonction qui gère le clique de l'utilisateur sur la colonne
-   * @param pX position x du clique de l'utilisateur
-   * @param pY position y du clique de l'utilisateur
+   * Fonction qui gère le clic de l'utilisateur sur la colonne
+   * @param pX position x du clic de l'utilisateur
+   * @param pY position y du clic de l'utilisateur
    * @param color Couleur actuel à remplir dans les cercles
    * @param clrIndex index de couleur de la couleur actuelle 
    * @return

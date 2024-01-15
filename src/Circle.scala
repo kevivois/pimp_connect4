@@ -1,7 +1,15 @@
 import java.awt.Color
 import hevs.graphics.FunGraphics
 
-
+/**
+ * Class représentant un cerlce et gérant sa position et son affichage
+ * @param graphics variable funGraphics gérant la fenêtre d'affichage
+ * @param x cordonnée x du point en haut à gauche du cercle
+ * @param y cordonnée y du point en haut à gauche du cercle
+ * @param radius rayon du cercle
+ * @param colored variable boolean représentant s'il est rempli ou non
+ * @param color couleur du cercle
+ */
 class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boolean,var color:Color=Color.red) {
 
   def getX:Int = x
@@ -9,9 +17,6 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
   var colorIndex:Int = -1
 
   def getRadius:Int = radius
-  def getCenterX:Int = getX+radius
-  def getCenterY:Int = getY+radius
-
   def getColor():Color = color
 
   def setColorIndex(idx:Int):Unit = {
@@ -24,6 +29,10 @@ class Circle(graphics:FunGraphics,x:Int,y:Int,radius:Int,private var colored:Boo
     color = clr
     draw();
   }
+
+  /**
+   * Fonction permettant de dessiner le cercle , en fonction de s'il est rempli ou non
+   */
   def draw():Unit = {
     drawBorders();
     if(colored) {

@@ -21,8 +21,8 @@ class Game {
   var index:Int = 0
   var mouseListener:CustomMouseListener = new CustomMouseListener(this)
   graphics.addMouseListener(mouseListener)
-  var x:Int = 50
-  var y:Int = 100
+  var posX:Int = 50
+  var posY:Int = 100
 
   init()
 
@@ -51,22 +51,19 @@ class Game {
   def setColors():Unit = {
     val clr1:Color = JColorChooser.showDialog(null,"player 1 color ",color1)
     val clr2:Color = JColorChooser.showDialog(null,"player 2 color",color2)
-    if (clr1 == clr2 || clr1 == Color.white  || clr1 == Color.black || clr2 == Color.white  || clr2 == Color.black) {
-      return
-    }
-    color1 = clr1
-    color2 = clr2
+    color1 = if(clr1 != Color.white && clr1 != Color.black && clr1 != clr2) clr1 else color1
+    color2 = if(clr2 != Color.white && clr2 != Color.black && clr2 != clr2) clr1 else color2
     for(i <- data.indices){
-      data(i).changeAllColors(0,clr1)
-      data(i).changeAllColors(1,clr2)
+      data(i).changeAllColors(0,color1)
+      data(i).changeAllColors(1,color2)
     }
     updateInfoGraphics;
   }
 
   /**
-   * Fonction permettant de gérer le clique de l'utilisateur sur l'interface graphique
-   * @param x
-   * @param y
+   * Fonction permettant de gérer le clic de l'utilisateur sur l'interface graphique
+   * @param x cordonnée x du clic de l'utilisateur
+   * @param y cordonnée y du clic de l'utilisateur
    */
   def onClicked(x:Int,y:Int):Unit = {
     for (i:Int <- data.indices) {
@@ -92,7 +89,7 @@ class Game {
    */
   def reset():Unit = {
     graphics.clear();
-    graphics.drawString(200,200,s"${player_won} has won !",color=Color.black,size=20)
+    graphics.drawString(180,250,s"${player_won} has won !",color=Color.black,size=20)
     Thread.sleep(5000)
     count=0
     index = if(index == 1) 0 else 1
@@ -107,7 +104,7 @@ class Game {
     for (i: Int <- data.indices) {
       var count: Int = 0
       var actualColor: Color = Color.white
-      for (j: Int <- data(i).getCircles.indices) {
+      for (j: Int <- data(i).getCircles.indices) { // vérification verticale
         val circles: Array[Circle] = data(i).getCircles
         val c = circles(j)
         if(c.is_colored()){
@@ -150,7 +147,7 @@ class Game {
               actualColor = Color.white
             }
             if (count >= 4) {
-              player_won = if(color1 == actualColor) "player 1" else "player2"
+              player_won = if(color1 == actualColor) "player 1" else "player2" // vérification horizontale
               println(s"win horizontaly ")
               return true
             }
@@ -170,7 +167,7 @@ class Game {
                 }
               }
               if (count == 3) {
-                player_won = if(color1 == actualColor) "player 1" else "player2"
+                player_won = if(color1 == actualColor) "player 1" else "player2" // vérification diagonale descendante
                 print("win diagonaly down")
                 return true
               }
@@ -189,7 +186,7 @@ class Game {
                 }
               }
               if (count == 3) {
-                player_won = if(color1 == actualColor) "player 1" else "player2"
+                player_won = if(color1 == actualColor) "player 1" else "player2"  // vérification diagonale montante
                 print("win diagonaly up")
                 return true
               }
@@ -198,7 +195,7 @@ class Game {
         }
       }
     }
-    if(count == LENGTH_Y*LENGTH_X){
+    if(count == LENGTH_Y*LENGTH_X){   // vérification quand touts les cercles sont remplis
       player_won = "no one"
       return true
     }
@@ -206,9 +203,12 @@ class Game {
 
   }
 
+  /**
+   * Function permettant d'initialiser le contenu de chaque colonne
+   */
   private def init():Unit = {
     for (i <- data.indices) {
-      data(i) = new CircleColumn(graphics,LENGTH_Y,(i*2*(RADIUS+OFFSET_BETWEEN_CIRCLE))+x,y,RADIUS)
+      data(i) = new CircleColumn(graphics,LENGTH_Y,(i*2*(RADIUS+OFFSET_BETWEEN_CIRCLE))+posX,posY,RADIUS)
     }
   }
   def update():Unit = {
@@ -216,11 +216,14 @@ class Game {
     draw()
   }
 
+  /**
+   * Fonction permettant de dessiner de toutes les colonnes aux bonnes positions
+   */
   def draw(): Unit = {
     graphics.setColor(Color.blue)
     val boardWidth = 2 * LENGTH_X * (RADIUS + OFFSET_BETWEEN_CIRCLE)
     val boardHeight = 2 * RADIUS * LENGTH_Y
-    graphics.drawFillRect(x, y, boardWidth - RADIUS, boardHeight)
+    graphics.drawFillRect(posX, posY, boardWidth - RADIUS, boardHeight)
     for (i <- data.indices) {
       data(i).drawLine()
     }
