@@ -6,21 +6,19 @@ class Grid(x: Int, y: Int) {
   private var p: String = ""
   private var next_p: String = ""
 
-  def getX(): Int = return x
+  def getX(): Int = x
 
-  def getY(): Int = return y
+  def getY(): Int = y
 
-  def getGrid(): Array[Array[String]] = return grid_2d
+  def getGrid(): Array[Array[String]] = grid_2d
 
-  def getNextPlayer(): String = return next_p
+  def getNextPlayer(): String = next_p
+
+  def getPlayer(): String = p
 
   // Clears the grid for replay
   def clearGrid(): Unit = {
-    for (i <- 0 until y) {
-      for (j <- 0 until x) {
-        grid_2d(i)(j) = " "
-      }
-    }
+    grid_2d = Array.fill(y, x)(" ")
     player = 0
   }
 
@@ -63,19 +61,19 @@ class Grid(x: Int, y: Int) {
   // Selects the player (O or X)
   def setNextPlayer(): String = {
     if (player % 2 == 0) {
-      p = "X"
-      next_p = "O"
+      p = Console.RED + "X" + Console.RESET
+      next_p = Console.YELLOW + "O" + Console.RESET
       player = 1
     } else {
-      p = "O"
-      next_p = "X"
+      p = Console.YELLOW + "O" + Console.RESET
+      next_p = Console.RED + "X" + Console.RESET
       player = 0
     }
     p
   }
 
   // Draws the symbol of a player on the grid
-  def showSymbol(column: Int): Unit = {
+  def setSymbol(column: Int): Unit = {
     var doing: Boolean = true
     for (i <- y - 1 to 0 by -1) {
       for (j <- 0 until x) {
@@ -84,7 +82,6 @@ class Grid(x: Int, y: Int) {
             grid_2d(i)(j) = setNextPlayer()
             doing = false
             res = ""
-            println(drawGrid())
           }
         }
       }
