@@ -90,6 +90,7 @@ The `CustomMouseListener` class in the `WithUi` package is a custom implementati
 1. User interface
 
 ![1.png](src/WithUi/images/1.png)
+
 2. Diagonal win
 
 ![2.png](src/WithUi/images/2.png)
