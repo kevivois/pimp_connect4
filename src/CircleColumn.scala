@@ -1,12 +1,17 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.Color
-import java.awt.geom.Point2D
-import java.util.Date
-import java.util.concurrent.{ScheduledExecutorService, ThreadPoolExecutor, TimeUnit}
 
+/**
+ * Fonction représentant une colonne du puissance 4
+ * @param graphics gère l'affichage des informations / cercles
+ * @param length nombre de cercle pour chaque colonne
+ * @param x Cordonnée x du point de départ de la colonne
+ * @param y Cordonnée y du point de départ de la colonne
+ * @param radius rayon des cercles de la colonne
+ */
 class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
-  private var circles:Array[Circle] = Array.ofDim[Circle](length)
+  private val circles:Array[Circle] = Array.ofDim[Circle](length)
   private var filledCirles:Int = 0
   def getX:Int = x
   def getY:Int = y
@@ -15,8 +20,17 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
   def getLength:Int = length
   def getCircles:Array[Circle] = circles
   init()
+
+  /**
+   * Fonction qui gère le clique de l'utilisateur sur la colonne
+   * @param pX position x du clique de l'utilisateur
+   * @param pY position y du clique de l'utilisateur
+   * @param color Couleur actuel à remplir dans les cercles
+   * @param clrIndex index de couleur de la couleur actuelle 
+   * @return
+   */
   def onClicked(pX:Int,pY:Int,color:Color,clrIndex:Int):Int = {
-    var lastPosition:Int = -1
+    val mov:Int = if(!this.is_full()) 1 else 0
     for(i <- circles.indices){
       if(!circles(i).is_colored()){
         circles(i).fill(color)
@@ -25,23 +39,22 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
           circles(i-1).empty()
           circles(i-1).setColorIndex(-1)
         }
-        lastPosition = i
       }else{
-        return lastPosition
+        return mov
       }
       Thread.sleep(60)
     }
     filledCirles+=1
-    return lastPosition
+    mov
   }
   def changeAllColors(idx:Int,clr:Color): Unit = {
-    for(i <- circles.indices){
+    for(i:Int <- circles.indices){
       if(idx == circles(i).getColorIndex){circles(i).setColor(clr)}
     }
   }
   def is_full():Boolean = {
     var result:Boolean = true
-    for(circle <- circles){
+    for(circle:Circle <- circles){
       if(!circle.is_colored()){
         result=false
       }
@@ -49,14 +62,14 @@ class CircleColumn(graphics:FunGraphics,length:Int,x:Int,y:Int,radius:Int) {
     result
   }
   def init():Unit = {
-    for (i <- circles.indices) {
-      val posY = y + (radius*2 * i)
-      val posX = x
+    for (i:Int <- circles.indices) {
+      val posY:Int = y + (radius*2 * i)
+      val posX:Int = x
       circles(i) = new Circle(graphics,posX,posY,radius,false)
     }
   }
   def drawLine():Unit = {
-    for(i <- circles.indices){
+    for(i:Int <- circles.indices){
       circles(i).draw()
     }
   }
