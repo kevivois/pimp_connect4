@@ -72,7 +72,7 @@ class Grid(x: Int, y: Int) {
     p
   }
 
-  // Draws the symbol of a player on the grid
+  // Sets the symbol of a player on the grid
   def setSymbol(column: Int): Unit = {
     var doing: Boolean = true
     for (i <- y - 1 to 0 by -1) {

@@ -3,9 +3,7 @@ class Game(g: Grid = new Grid(7, 6)) {
   private var moveCount: Int = 0
   private var numToWin: Int = 4
 
-  /*
-  * Play method
-  */
+  // Main method, used to play the game
   def play(): Unit = {
     var reset: Boolean = false
     println(g.drawGrid())
@@ -40,9 +38,8 @@ class Game(g: Grid = new Grid(7, 6)) {
     }
   }
 
-  /*
-  * Gives the possibility to choose a Column using the Input Class
-  */
+
+  // Gives the possibility to choose a Column using the Input Class
   def chooseColumn(): Int = {
     var i: Int = 0
     do {
@@ -52,9 +49,8 @@ class Game(g: Grid = new Grid(7, 6)) {
     i
   }
 
-  /*
-  * Checks after every move of a player if he/she won.
-  */
+
+  // Checks after every move of a player if he/she won.
   private def checkWin(): Boolean = {
     val currentPlayer = g.getPlayer()
 
@@ -134,12 +130,6 @@ class Game(g: Grid = new Grid(7, 6)) {
       return true
     }
     false
-  }
-
-  def clearScreen(): Unit = {
-    for (i <- 0 until 50) {
-      println()
-    }
   }
 
   def replay(): Boolean = {
