@@ -1,51 +1,48 @@
 package Console
 
 import hevs.utils.Input
-class Game(g: Grid = new Grid(7, 6)) {
+
+class Game() {
 
   private var moveCount: Int = 0
   private var numToWin: Int = 4
+  var g: Grid = new Grid(7, 6)
+  println("\nConnect4 on console by FS and KV\n\n")
 
-  /*
-  * Play method
-  */
+  // Main method, used to play the game
   def play(): Unit = {
-    var reset: Boolean = false
-    println(g.drawGrid())
     while (true) {
-      if (reset) {
-        moveCount = 0
-        g.clearGrid()
-        println(g.drawGrid())
-        reset = false
-      }
-
       // Doesn't show the Next move at the beginning
       if (moveCount != 0) {
         println(s"Next move : ${g.getNextPlayer()}")
+      } else {
+        println(g.drawGrid())
       }
       val columnChoice: Int = chooseColumn()
-      g.setSymbol(columnChoice)
-      println(g.drawGrid())
 
       // Used to increment the moveCount only if a column is not full
       if (!g.isColumnFull(columnChoice)) {
         moveCount += 1
       }
+      g.setSymbol(columnChoice)
+      println(g.drawGrid())
 
+      // Used to reset or quit the game
       if (checkWin()) {
+        moveCount = 0
+        g = new Grid(7, 6)
         if (replay()) {
-          reset = true
+          play()
+          return
         } else {
           System.exit(0);
         }
       }
+
     }
   }
 
-  /*
-  * Gives the possibility to choose a Column using the Input Class
-  */
+  // Gives the possibility to choose a Column using the Input Class
   def chooseColumn(): Int = {
     var i: Int = 0
     do {
@@ -55,9 +52,8 @@ class Game(g: Grid = new Grid(7, 6)) {
     i
   }
 
-  /*
-  * Checks after every move of a player if he/she won.
-  */
+
+  // Checks after every move of a player if he/she won.
   private def checkWin(): Boolean = {
     val currentPlayer = g.getPlayer()
 
@@ -128,10 +124,11 @@ class Game(g: Grid = new Grid(7, 6)) {
             playerCount = 0
           }
         }
+        playerCount = 0
       }
     }
 
-    // Check for a draw
+    // Checks for a draw
     if (moveCount == g.getX() * g.getY()) {
       println("Nobody has won...")
       return true
@@ -139,12 +136,7 @@ class Game(g: Grid = new Grid(7, 6)) {
     false
   }
 
-  def clearScreen(): Unit = {
-    for (i <- 0 until 50) {
-      println()
-    }
-  }
-
+  // Asks the players if they want to continue or end the game
   def replay(): Boolean = {
     print(scala.Console.RESET + "Do you want to replay ? (y/n): ")
     if (Input.readChar().toLower == 'y') {

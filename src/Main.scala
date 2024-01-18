@@ -1,5 +1,4 @@
 import hevs.utils.Input
-
 object Main extends App {
   /*
   *  Play with user interface

@@ -2,7 +2,7 @@ package Console
 
 class Grid(x: Int, y: Int) {
 
-  private var res: String = "\nConnect4 on console by FS and KV\n\n"
+  private var res: String = ""
   private var grid_2d: Array[Array[String]] = Array.fill(y, x)(" ")
   private var player: Int = 0
   private var p: String = ""
@@ -17,12 +17,6 @@ class Grid(x: Int, y: Int) {
   def getNextPlayer(): String = next_p
 
   def getPlayer(): String = p
-
-  // Clears the grid for replay
-  def clearGrid(): Unit = {
-    grid_2d = Array.fill(y, x)(" ")
-    player = 0
-  }
 
   // Checks if a column is full, the method will not permit the move counter to increment
   def isColumnFull(column: Int): Boolean = {
@@ -54,7 +48,7 @@ class Grid(x: Int, y: Int) {
     }
     res += "  "
     for (i <- 1 to x) {
-      res += " " + i + "   "
+      res += " " + i  + "   "
     }
     res += "\n"
     res
@@ -74,7 +68,7 @@ class Grid(x: Int, y: Int) {
     p
   }
 
-  // Draws the symbol of a player on the grid
+  // Sets the symbol of a player on the grid
   def setSymbol(column: Int): Unit = {
     var doing: Boolean = true
     for (i <- y - 1 to 0 by -1) {
